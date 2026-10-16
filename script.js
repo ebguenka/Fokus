@@ -7,7 +7,11 @@ const titulo = document.querySelector('.app__title')
 const botoes = document.querySelectorAll('.app__card-button')
 const startPauseBt = document.querySelector('#start-pause')
 const musicaFocoInput = document.querySelector('#alternar-musica')
+const iniciarOuPausarBt = document.querySelector('#start-pause span')
 const musica = new Audio('/sons/luna-rise-part-one.mp3')
+const audioPlay = new Audio('/sons/play.wav');
+const audioPausa = new Audio('/sons/pause.mp3');
+const audioTempoFinalizado = new Audio('./sons/beep.mp3')
 
 let tempoDecorridoEmSegundos = 5
 let intervaloId = null
@@ -63,28 +67,54 @@ function alterarContexto(contexto) {
     }
 }
 
+// const contagemRegressiva = () => {
+//     if(tempoDecorridoEmSegundos <= 0){
+//         zerar()
+//         alert('Tempo finalizado!')
+//         return
+//     }
+//     tempoDecorridoEmSegundos -= 1
+//     console.log('Temporizador: ' + tempoDecorridoEmSegundos)
+// }
+
+// startPauseBt.addEventListener('click', iniciarOuPausar)
+
+// function iniciarOuPausar() {
+//     if(intervaloId){
+//         zerar()
+//         return
+//     }
+//     intervaloId = setInterval(contagemRegressiva, 1000)
+// }
 
 const contagemRegressiva = () => {
-    if(tempoDecorridoEmSegundos <= 0){
+    if(tempoDecorridoEmSegundos <= 0) {
+       // audioTempoFinalizado.play()  
+        alert('Tempo finalizado')
         zerar()
-        alert('Tempo finalizado!')
         return
     }
     tempoDecorridoEmSegundos -= 1
-    console.log('Temporizador: ' + tempoDecorridoEmSegundos)
+    console.log('Tempo: ' + tempoDecorridoEmSegundos)
+    //console.log('Id: ' + intervaloId)
 }
 
 startPauseBt.addEventListener('click', iniciarOuPausar)
 
 function iniciarOuPausar() {
-    if(intervaloId){
+    if (intervaloId) {
+        audioPausa.play();  
         zerar()
-        return
+        return // early return -- circuit breaker
     }
+    audioPlay.play();  
     intervaloId = setInterval(contagemRegressiva, 1000)
+    iniciarOuPausarBt.textContent = 'Pausar'
 }
+
 
 function zerar() {
     clearInterval(intervaloId)
+    iniciarOuPausarBt.textContent = 'Começar'
     intervaloId = null
 }
